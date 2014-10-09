@@ -22,7 +22,7 @@ namespace Microsoft.AspNet.Identity
     public class SignInManager<TUser> where TUser : class
     {
         public SignInManager(UserManager<TUser> userManager, IContextAccessor<HttpContext> contextAccessor, 
-            IClaimsIdentityFactory<TUser> claimsFactory, IOptionsAccessor<IdentityOptions> optionsAccessor)
+            IClaimsIdentityFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor)
         {
             if (userManager == null)
             {
