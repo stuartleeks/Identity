@@ -60,6 +60,7 @@ namespace Microsoft.AspNet.Identity.EntityFramework.Test
             builder.UseServices(services =>
             {
                 ConfigureDbServices(ConnectionString, services);
+                services.AddScoped<ApplicationDbContext>();
                 services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>();
             });
 
