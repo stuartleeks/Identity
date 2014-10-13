@@ -148,6 +148,7 @@ namespace Microsoft.AspNet.Identity.Test
             manager.Setup(m => m.IsLockedOutAsync(user, CancellationToken.None)).ReturnsAsync(false).Verifiable();
             manager.Setup(m => m.FindByNameAsync(user.UserName, CancellationToken.None)).ReturnsAsync(user).Verifiable();
             manager.Setup(m => m.CheckPasswordAsync(user, "password", CancellationToken.None)).ReturnsAsync(true).Verifiable();
+            manager.Setup(m => m.ResetAccessFailedCountAsync(user, CancellationToken.None)).ReturnsAsync(IdentityResult.Success).Verifiable();
             var context = new Mock<HttpContext>();
             var response = new Mock<HttpResponse>();
             context.Setup(c => c.Response).Returns(response.Object).Verifiable();
@@ -184,6 +185,7 @@ namespace Microsoft.AspNet.Identity.Test
             manager.Setup(m => m.IsLockedOutAsync(user, CancellationToken.None)).ReturnsAsync(false).Verifiable();
             manager.Setup(m => m.FindByNameAsync(user.UserName, CancellationToken.None)).ReturnsAsync(user).Verifiable();
             manager.Setup(m => m.CheckPasswordAsync(user, "password", CancellationToken.None)).ReturnsAsync(true).Verifiable();
+            manager.Setup(m => m.ResetAccessFailedCountAsync(user, CancellationToken.None)).ReturnsAsync(IdentityResult.Success).Verifiable();
             var context = new Mock<HttpContext>();
             var response = new Mock<HttpResponse>();
             response.Setup(r => r.SignIn(It.IsAny<AuthenticationProperties>(), It.IsAny<ClaimsIdentity>())).Verifiable();
@@ -229,6 +231,10 @@ namespace Microsoft.AspNet.Identity.Test
             manager.Setup(m => m.FindByNameAsync(user.UserName, CancellationToken.None)).ReturnsAsync(user).Verifiable();
             manager.Setup(m => m.GetUserIdAsync(user, CancellationToken.None)).ReturnsAsync(user.Id).Verifiable();
             manager.Setup(m => m.CheckPasswordAsync(user, "password", CancellationToken.None)).ReturnsAsync(true).Verifiable();
+            if (supportsLockout)
+            {
+                manager.Setup(m => m.ResetAccessFailedCountAsync(user, CancellationToken.None)).ReturnsAsync(IdentityResult.Success).Verifiable();
+            }
             var context = new Mock<HttpContext>();
             var response = new Mock<HttpResponse>();
             response.Setup(r => r.SignIn(It.Is<ClaimsIdentity>(id => id.Name == user.Id))).Verifiable();
@@ -328,6 +334,7 @@ namespace Microsoft.AspNet.Identity.Test
             if (supportsLockout)
             {
                 manager.Setup(m => m.IsLockedOutAsync(user, CancellationToken.None)).ReturnsAsync(false).Verifiable();
+                manager.Setup(m => m.ResetAccessFailedCountAsync(user, CancellationToken.None)).ReturnsAsync(IdentityResult.Success).Verifiable();
             }
             manager.Setup(m => m.FindByIdAsync(user.Id, CancellationToken.None)).ReturnsAsync(user).Verifiable();
             manager.Setup(m => m.VerifyTwoFactorTokenAsync(user, provider, code, CancellationToken.None)).ReturnsAsync(true).Verifiable();
@@ -580,5 +587,6 @@ namespace Microsoft.AspNet.Identity.Test
             Assert.Equal(SignInStatus.LockedOut, result);
             manager.VerifyAll();
         }
+
     }
 }
