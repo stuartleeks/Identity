@@ -18,5 +18,11 @@ namespace Microsoft.AspNet.Identity
         ///     If set, enforces that emails are non empty, valid, and unique
         /// </summary>
         public bool RequireUniqueEmail { get; set; }
+
+        /// <summary>
+        ///     If set, enforces that user claims are unique (type/value)
+        /// </summary>
+        public bool RequireUniqueClaims { get; set; }
+
     }
 }

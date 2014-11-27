@@ -145,6 +145,10 @@
     <value>DefaultTokenProvider</value>
     <comment>Name of the default token provider</comment>
   </data>
+  <data name="DuplicateClaims" xml:space="preserve">
+    <value>Duplicate user claims are not allowed.</value>
+    <comment>error for duplicate claims</comment>
+  </data>
   <data name="DuplicateEmail" xml:space="preserve">
     <value>Email '{0}' is already taken.</value>
     <comment>error for duplicate emails</comment>

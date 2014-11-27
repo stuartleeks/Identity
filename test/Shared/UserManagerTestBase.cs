@@ -349,6 +349,32 @@ namespace Microsoft.AspNet.Identity.Test
         }
 
         [Fact]
+        public async Task CanAddDuplicateUserClaimByDefault()
+        {
+            var manager = CreateManager();
+            var user = CreateTestUser();
+            IdentityResultAssert.IsSuccess(await manager.CreateAsync(user));
+            Claim[] claims = { new Claim("c", "v"), new Claim("c", "v"), new Claim("c2", "v3") };
+            foreach (Claim c in claims)
+            {
+                IdentityResultAssert.IsSuccess(await manager.AddClaimAsync(user, c));
+            }
+            var userClaims = await manager.GetClaimsAsync(user);
+            Assert.Equal(3, userClaims.Count);
+        }
+
+        [Fact]
+        public async Task CanRequireUniqueClaims()
+        {
+            var manager = CreateManager();
+            manager.Options.User.RequireUniqueClaims = true;
+            var user = CreateTestUser();
+            IdentityResultAssert.IsSuccess(await manager.CreateAsync(user));
+            Claim[] claims = { new Claim("c", "v"), new Claim("c", "v"), new Claim("c2", "v3") };
+            IdentityResultAssert.IsFailure(await manager.AddClaimsAsync(user, claims), "Duplicate user claims are not allowed.");
+        }
+
+        [Fact]
         public async Task CanReplaceUserClaim()
         {
             var manager = CreateManager();

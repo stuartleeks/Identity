@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
 #if ASPNET50
 using System.Net.Mail;
 #endif
@@ -43,6 +45,11 @@ namespace Microsoft.AspNet.Identity
             {
                 await ValidateEmail(manager, user, errors);
             }
+            if (manager.Options.User.RequireUniqueClaims)
+            {
+                await VerifyUniqueClaims(manager, user, errors);
+            }
+
             return errors.Count > 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
         }
 
@@ -95,5 +102,32 @@ namespace Microsoft.AspNet.Identity
                 errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateEmail, email));
             }
         }
+
+        private async Task VerifyUniqueClaims(UserManager<TUser> manager, TUser user, ICollection<string> errors)
+        {
+            var claims = await manager.GetClaimsAsync(user);
+
+            var distinct = claims.Distinct(new ClaimsComparer());
+
+            if (distinct.Count() != claims.Count)
+            {
+                errors.Add(Resources.DuplicateClaims);
+            }
+        }
+
+        private class ClaimsComparer : IEqualityComparer<Claim>
+        {
+            public bool Equals(Claim x, Claim y)
+            {
+                // REVIEW: do we want to normalize at all?
+                return string.Equals(x.Type, y.Type) && string.Equals(x.Value, y.Value);
+            }
+
+            public int GetHashCode(Claim obj)
+            {
+                return (obj.Type + "|" + obj.Value).GetHashCode();
+            }
+        }
+
     }
 }

@@ -123,6 +123,22 @@ namespace Microsoft.AspNet.Identity
         }
 
         /// <summary>
+        /// Duplicate user claims are not allowed.
+        /// </summary>
+        internal static string DuplicateClaims
+        {
+            get { return GetString("DuplicateClaims"); }
+        }
+
+        /// <summary>
+        /// Duplicate user claims are not allowed.
+        /// </summary>
+        internal static string FormatDuplicateClaims()
+        {
+            return GetString("DuplicateClaims");
+        }
+
+        /// <summary>
         /// Email '{0}' is already taken.
         /// </summary>
         internal static string DuplicateEmail
