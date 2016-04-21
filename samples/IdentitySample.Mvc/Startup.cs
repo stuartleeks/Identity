@@ -41,9 +41,13 @@ namespace IdentitySample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddEntityFrameworkSqlite();
+            
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    // options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"])
+                    options.UseSqlite(Configuration["Data:DefaultConnection:ConnectionStringSqlite"])
+             );
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => {
                 options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
